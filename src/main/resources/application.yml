@@ -1,0 +1,37 @@
+server:
+  port: 10090
+
+server-config:
+  api-root: api
+
+feign:
+  hystrix:
+    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: full
+        errorDecoder: com.circlee.bookbook.codec.ErrorDecoder
+        decode404: false
+#        encoder: feign.jackson.JacksonEncoder
+#        decoder: feign.jackson.JacksonDecoder
+
+external:
+  kakao:
+    url: https://dapi.kakao.com
+    app-key: fd4d6d4d977bfd65334ee63452c9239a
+  naver:
+    url: https://openapi.naver.com
+    client-id: GpvMdPYZy07t7uN3wGnB
+    client-secret: 2xSTPPRbDE
+
+logging:
+  level:
+    com.circlee.bookbook: DEBUG
+    org.springframework.security: DEBUG
+
+
+
+

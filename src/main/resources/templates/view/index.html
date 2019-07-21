@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <title>BookBookBook</title>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+    <script src="https://unpkg.com/http-vue-loader"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.js"></script>
+
+    <!-- Vue Pages and Components here -->
+    <script src='/js/pages/login.vue.js'></script>
+    <script src='/js/pages/signup.vue.js'></script>
+    <script src='/js/pages/search.vue.js'></script>
+    <script src='/js/pages/detail.vue.js'></script>
+    <script src='/js/pages/notFound.vue.js'></script>
+
+    <!-- setting -->
+    <script src='/js/setting.js'></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/css/template.css">
+
+
+    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+    <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+
+<body class="skin-blue pace-done pace-done" style="height: 100%;">
+
+<div class="container body-content" style="height: 100%;">
+    <div id="app" v-cloak class="wrapper hold-transition">
+        <v-app>
+            <router-view></router-view>
+        </v-app>
+    </div>
+</div>
+
+<script>
+    Vue.use(VueRouter);
+
+    var routes = [
+        {
+            path: '/view/index',
+            component: login
+        },
+        {
+            path: '/view/signup',
+            component: signup
+        },
+        {
+            path: '/view/search',
+            component: search
+        },
+        {
+            path: '/view/detail',
+            component: detail
+        },
+        { path: '*', component: notFound }
+    ];
+
+    var router = new VueRouter({
+        mode: 'history',
+        routes : routes // short for `routes: routes`
+    })
+
+    router.beforeEach(function(to, from, next){
+        next();
+    });
+
+    var app = new Vue({
+        el: '#app',
+        watch: {},
+        mounted: function() {
+        },
+        data: {
+            msg: 'Hello',
+            email: ''
+        },
+        methods: {},
+        router : router
+    })
+</script>
+</body>
+
+</html>

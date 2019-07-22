@@ -4,6 +4,7 @@ server:
 server-config:
   api-root: api
 
+
 feign:
   hystrix:
     enabled: true
@@ -21,7 +22,7 @@ feign:
 external:
   kakao:
     url: https://dapi.kakao.com
-    app-key: fd4d6d4d977bfd65334ee63452c9239a
+    app-key: fd4d6d4d977bfd65334ee63452c9239a---
   naver:
     url: https://openapi.naver.com
     client-id: GpvMdPYZy07t7uN3wGnB
@@ -31,7 +32,20 @@ logging:
   level:
     com.circlee.bookbook: DEBUG
     org.springframework.security: DEBUG
+    org.springframework.jdbc: DEBUG
 
+
+
+spring:
+  devtools:
+    livereload:
+      enabled: true
+    thymeleaf:
+  jpa:
+    show-sql: true
+  datasource:
+    username: sa
+    password:
 
 
 

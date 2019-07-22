@@ -1,12 +1,12 @@
 package com.circlee.bookbook.model.kakao.common;
 
-import com.circlee.bookbook.util.jackson.LocalDateTimeDeserializer;
+import com.circlee.bookbook.util.jackson.LocalDateDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -23,8 +23,8 @@ public class Book implements Serializable {
     private String url;
     private String status;
 
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime datetime;
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private LocalDate datetime;
 
     private BigDecimal price;
     private BigDecimal salePrice;

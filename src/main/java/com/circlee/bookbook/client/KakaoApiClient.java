@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface KakaoApiClient {
 
     @GetMapping(value = "/v3/search/book?target=title", headers = {"Authorization=KakaoAK ${external.kakao.app-key}"})
-    KakaoBookApiResponse searchBookByName(@RequestParam("query") String query);
+    KakaoBookApiResponse searchBookByName(@RequestParam("query") String query
+            , @RequestParam("page") int page
+            , @RequestParam("size") int size);
 
 }

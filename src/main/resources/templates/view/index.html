@@ -16,6 +16,7 @@
     <script src='/js/pages/signup.vue.js'></script>
     <script src='/js/pages/search.vue.js'></script>
     <script src='/js/pages/detail.vue.js'></script>
+    <script src='/js/pages/sidebar.vue.js'></script>
     <script src='/js/pages/notFound.vue.js'></script>
 
     <!-- setting -->
@@ -25,16 +26,17 @@
     <link rel="stylesheet" type="text/css" href="/css/template.css">
 
 
-    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
-    <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <!--<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>-->
+    <!--<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>-->
 </head>
 
 <body class="skin-blue pace-done pace-done" style="height: 100%;">
 
 <div class="container body-content" style="height: 100%;">
-    <div id="app" v-cloak class="wrapper hold-transition">
-        <v-app>
-            <router-view></router-view>
+    <div id="app" v-cloak class="wrapper hold-transition" style="height:100%">
+        <v-app  style="height:100%">
+            <sidebar v-show="sideShow"></sidebar>
+            <router-view v-bind:class="{ sideShow: sideShow }" style="height:100%"></router-view >
         </v-app>
     </div>
 </div>
@@ -80,8 +82,16 @@
             msg: 'Hello',
             email: ''
         },
+        computed: {
+            sideShow : function(){
+                return this.$route.path == '/view/search';
+            }
+        },
         methods: {},
-        router : router
+        router : router,
+        components: {
+            'sidebar': sidebar
+        }
     })
 </script>
 </body>

@@ -2,16 +2,16 @@ package com.circlee.bookbook.util.jackson;
 
 import java.time.format.DateTimeFormatter;
 
-public class LocalDateTimeDeserializer extends com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer {
+public class LocalDateDeserializer extends com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer {
 
 
     private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
-    private LocalDateTimeDeserializer() {
+    private LocalDateDeserializer() {
         this(DEFAULT_FORMATTER);
     }
 
-    public LocalDateTimeDeserializer(DateTimeFormatter formatter) {
+    public LocalDateDeserializer(DateTimeFormatter formatter) {
         super(formatter);
     }
 }

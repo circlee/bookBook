@@ -30,7 +30,7 @@ public class MemberRepositoryTest {
             member.setUpw("pw" + i);
 
             MemberRole role = new MemberRole();
-            role.setMemberRoleType(MemberRoleType.ADMIN);
+            role.setMemberRoleType(MemberRoleType.USER);
             member.setRoles(Arrays.asList(role));
 
             memberRepository.save(member);

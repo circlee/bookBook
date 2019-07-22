@@ -6,12 +6,12 @@ var login = Vue.component("Login", {
             <p class="login-box-msg">
                 <span>Authenticate to continue</span>
             </p>
-            <form @submit="submit">
+            <form action="/auth/login" method="post">
                 <div class="form-group has-feedback">
-                    <input placeholder="email" class="form-control" v-model="email">
+                    <input placeholder="email" class="form-control" v-model="email" name="username">
                 </div>
                 <div class="form-group has-feedback">
-                    <input type="password" placeholder="Password" class="form-control" v-model="password">
+                    <input type="password" placeholder="Password" class="form-control" v-model="password" name="password">
                 </div>
                 <div class="row">
                     <div class="col-xs-4">
@@ -31,7 +31,20 @@ var login = Vue.component("Login", {
     }
     , methods : {
         submit : function(){
-            axios.post('/')
+
+            var params = new URLSearchParams();
+            params.append('username', this.email);
+            params.append('password', this.password);
+
+            axios.post('/auth/login'
+                , params
+                , { withCredentials: true}
+            )
+            .then(function(res) {
+                router.push('/view/search')
+            }, function() {
+                console.error(arguments);
+            });
         },
         signup : function(){
             router.push('/view/signup');

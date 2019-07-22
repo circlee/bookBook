@@ -5804,6 +5804,10 @@ button.close {
     margin-right: auto
 }
 
+.application--wrap{
+    height: 100%;
+}
+
 .pull-right {
     float: right!important
 }
@@ -5815,7 +5819,9 @@ button.close {
 .show {
     display: block!important
 }
-
+.sidebar {
+    position: fixed;
+}
 .invisible {
     visibility: hidden
 }
@@ -5860,6 +5866,17 @@ button.close {
     td.visible-xs,th.visible-xs {
         display: table-cell!important
     }
+}
+
+.nav-link {
+    cursor: pointer;
+}
+
+.content-wrapper {
+    height:100%;
+}
+.content-wrapper.sideShow {
+    margin-left: 150px;
 }
 
 @media (max-width: 767px) {

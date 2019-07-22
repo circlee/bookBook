@@ -5,11 +5,11 @@ axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 axios.interceptors.request.use(function (config) {
 
-    var token = document.querySelector("meta[name='_csrf']").content;
-    var header = document.querySelector("meta[name='_csrf_header']").content;
-    if(token && header) {
-        config.headers.common[header] = token;
-    }
+    // var token = document.querySelector("meta[name='_csrf']").content;
+    // var header = document.querySelector("meta[name='_csrf_header']").content;
+    // if(token && header) {
+    //     config.headers.common[header] = token;
+    // }
 
     return config;
 }, function (error) {
@@ -23,11 +23,11 @@ axios.interceptors.response.use(function (res) {
     if (err.response) {
         switch (err.response.status) {
             case 401:
-                return location.href = '/view/index';
+                alert('인증되지 않았습니다.');
+                return location.href = '/logout';
             case 403:
+                alert('허가되지 않은 접근입니다.');
                 return location.href = '/view/index';
-            // case 400:
-            //     return location.href = '/view/notFound';
             default:
                 console.log(err.response.status, err.response);
                 alert((err.response.data && err.response.data.message) || '오류가 발생하였습니다.' );

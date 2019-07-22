@@ -23,7 +23,7 @@ public class MemberServiceImpl implements MemberService {
     public Member createMember(Member member) {
         MemberRole role = new MemberRole();
         member.setUpw(passwordEncoder.encode(member.getUpw()));
-        role.setMemberRoleType(MemberRoleType.BASIC);
+        role.setMemberRoleType(MemberRoleType.USER);
         member.setRoles(Arrays.asList(role));
         memberRepository.save(member);
         return member;

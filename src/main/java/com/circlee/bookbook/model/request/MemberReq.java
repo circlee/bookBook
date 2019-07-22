@@ -21,8 +21,8 @@ public class MemberReq implements Serializable {
     private String email;
 
     @NonNull
-    @Pattern(regexp = "((?=.*[a-z])(?=.*\\d)(?=.*[A-Z])(?=.*[@#$%!]).{8,40})"
-            , message = "8자~40자, 숫자, 소문자, 대문자, 특수기호(@#$%!) 가 포함되어야 합니다.")
+    @Pattern(regexp = "((?=.*[a-zA-Z])(?=.*\\d)(?=.*[@#$%!]).{8,40})"
+            , message = "8자~40자, 숫자, 영문, 특수기호(@#$%!) 가 포함되어야 합니다.")
     private String password;
 
     @Ignore

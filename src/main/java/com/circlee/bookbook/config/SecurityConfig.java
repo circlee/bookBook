@@ -1,19 +1,24 @@
 package com.circlee.bookbook.config;
 
+import com.circlee.bookbook.service.impl.CustomUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
-import org.springframework.security.web.util.matcher.OrRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.*;
+import org.springframework.security.web.util.matcher.*;
+
+import java.util.LinkedHashMap;
 
 @Configuration
 @EnableWebSecurity
@@ -28,8 +33,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final RequestMatcher PROTECTED_URLS = new NegatedRequestMatcher(PUBLIC_URLS);
 
-//    @Autowired
-//    private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
+
+    @Override
+    public UserDetailsService userDetailsService() {
+        return customUserDetailsService;
+    }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -40,52 +50,61 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors();
-        http.csrf();
-        http.formLogin().disable();
-        http.logout().disable();
+        http.csrf().disable();
+
+
+
+
 
         http.authorizeRequests()
-                .antMatchers("/api/**").hasRole("BASIC")
-                .antMatchers("/view/search", "/view/*/detail").hasRole("BASIC")
                 .antMatchers("/","/view","/view/index","/view/signup","/view/notFound").permitAll()
-                .and().formLogin()
-                .loginPage("/view/index")
-                .loginProcessingUrl("/auth/login")
-                .defaultSuccessUrl("/view/search")
-                .failureUrl("/view/index")
+                .antMatchers("/auth/**").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                .logout();
+                .sessionManagement();
 
 
-        http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//        http.authorizeRequests()
-//                .antMatchers(PUBLIC_URL).permitAll()
-//                .anyRequest()
-//                .authenticated();
+        // exception
+        LinkedHashMap<RequestMatcher, AuthenticationEntryPoint> entryPoints = new LinkedHashMap<>();
+        entryPoints.put(new AntPathRequestMatcher("/api/**") , new Http403ForbiddenEntryPoint());
+        entryPoints.put(AnyRequestMatcher.INSTANCE , new LoginUrlAuthenticationEntryPoint("/view/index"));
 
-        //http.addFilterBefore(jwtTokenFilter(jwtTokenProvider),UsernamePasswordAuthenticationFilter.class);
-//        http.exceptionHandling().defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_URLS);
+        http.exceptionHandling()
+                .authenticationEntryPoint( new DelegatingAuthenticationEntryPoint(entryPoints))
+                //.accessDeniedHandler(new AccessDeniedHandlerImpl("/view/index?error=true"))
+                ;
+
+        // login & logout
+        http.formLogin().successHandler( new SavedRequestAwareAuthenticationSuccessHandler())
+                .loginPage("/view/index")
+                .failureUrl("/view/index?error=true")
+                .loginProcessingUrl("/auth/login")
+                .defaultSuccessUrl("/view/search", false)
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .and()
+                .logout()
+                .deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true)
+                .logoutSuccessUrl("/view/index?logout=true");
+
+
+
+
+
+//        http.addFilterAt(new JsonUsernamePasswordAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+
     }
 
+    @Primary
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean(BeanIds.AUTHENTICATION_MANAGER)
-//    @Override
-//    public AuthenticationManager authenticationManagerBean() throws Exception {
-//        return super.authenticationManagerBean();
-//    }
+    AuthenticationEntryPoint forbiddenEntryPoint() {
+        return new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
+    }
 
-//    AuthenticationEntryPoint forbiddenEntryPoint() {
-//        return new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
-//    }
-
-
-//    JwtTokenFilter jwtTokenFilter(JwtTokenProvider jwtTokenProvider) {
-//        return new JwtTokenFilter(jwtTokenProvider);
-//    }
 
 }

@@ -39,5 +39,7 @@
 server.port = 10090 지정되어 있습니다.
 > http://localhost:10090
 
+
+[Jar 다운로드](https://github.com/circlee/bookBook/blob/master/circlee-dist/bookbook-0.0.1-SNAPSHOT.jar)
  
 

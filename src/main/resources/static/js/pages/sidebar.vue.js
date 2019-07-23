@@ -4,7 +4,7 @@ var sidebar = Vue.component("Sidebar", {
   <nav class="sidebar-nav ps">
     <ul class="nav">
       <li class="nav-item">
-        <a class="nav-link" @click="route('/logout')">
+        <a class="nav-link" href="/logout">
           <i class="nav-icon icon-speedometer"></i> Logout
         </a>
       </li>
@@ -14,11 +14,11 @@ var sidebar = Vue.component("Sidebar", {
       </li>
       
       <li class="nav-item">
-        <a class="nav-link" @click="route('/view/search')"><i class="nav-icon icon-direction"></i> 검색 키워드 통계</a>
+        <a class="nav-link" @click="route('/view/keywords')"><i class="nav-icon icon-direction"></i> 검색 키워드 통계</a>
       </li>
       
       <li class="nav-item">
-        <a class="nav-link" @click="route('/view/search')"><i class="nav-icon icon-direction"></i> 유저 검색기록</a>
+        <a class="nav-link" @click="route('/view/search-history')"><i class="nav-icon icon-direction"></i> 유저 검색기록</a>
       </li>
       
     </ul>

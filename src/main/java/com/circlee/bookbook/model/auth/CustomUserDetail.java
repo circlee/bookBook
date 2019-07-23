@@ -15,6 +15,7 @@ public class CustomUserDetail implements UserDetails {
 
     private static final String ROLE_PREFIX = "ROLE_";
 
+    private Long id;
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
@@ -22,6 +23,7 @@ public class CustomUserDetail implements UserDetails {
     private CustomUserDetail(){}
 
     public CustomUserDetail(Member member) {
+        this.id = member.getId();
         this.username = member.getUid();
         this.password = member.getUpw();
 

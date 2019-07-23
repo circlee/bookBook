@@ -22,7 +22,7 @@ feign:
 external:
   kakao:
     url: https://dapi.kakao.com
-    app-key: fd4d6d4d977bfd65334ee63452c9239a---
+    app-key: fd4d6d4d977bfd65334ee63452c9239a
   naver:
     url: https://openapi.naver.com
     client-id: GpvMdPYZy07t7uN3wGnB

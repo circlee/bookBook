@@ -1,6 +1,7 @@
 package com.circlee.bookbook.service.impl;
 
 import com.circlee.bookbook.client.KakaoApiClient;
+import com.circlee.bookbook.component.event.SearchKeywordEvent;
 import com.circlee.bookbook.exception.BookBookException;
 import com.circlee.bookbook.model.kakao.KakaoBookApiResponse;
 import com.circlee.bookbook.model.kakao.common.Meta;
@@ -9,6 +10,7 @@ import com.circlee.bookbook.model.response.BookItemRes;
 import com.circlee.bookbook.model.response.PageableRes;
 import com.circlee.bookbook.service.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +24,15 @@ public class BookServiceImpl implements BookService {
 
     private final KakaoApiClient kakaoApiClient;
 
+    private final ApplicationEventPublisher publisher;
+
     @Override
     public PageableRes<BookItemRes> findBooksByKeyword(final BookSearchReq bookSearchReq) {
+
+        if(bookSearchReq.getPageNo() == 1) {
+            publisher.publishEvent(SearchKeywordEvent.of(bookSearchReq.getKeyword()));
+        }
+
         KakaoBookApiResponse kakaoBookApiResponse = kakaoApiClient.searchBookByName(bookSearchReq.getKeyword(), bookSearchReq.getPageNo(), bookSearchReq.getLimit());
 
         return Optional.ofNullable(kakaoBookApiResponse)

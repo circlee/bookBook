@@ -5867,13 +5867,17 @@ button.close {
         display: table-cell!important
     }
 }
-
+.body-content {
+    height:100%;
+    width: 100%;
+}
 .nav-link {
     cursor: pointer;
 }
 
 .content-wrapper {
-    height:100%;
+    min-height:100%;
+    height:auto;
 }
 .content-wrapper.sideShow {
     margin-left: 150px;

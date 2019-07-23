@@ -24,8 +24,13 @@ var search = Vue.component("Search", {
                                     
                                     <div class="col-lg-3 col-md-6">
                                         <div class="form-group">
-                                            <input placeholder="Search" class="form-control field" stagger="300">
+                                            <input placeholder="Keyword" 
+                                            class="form-control field" 
+                                            stagger="300" 
+                                            v-model="searchCondition.keyword"
+                                            >
                                         </div>
+                                        <input type="button" value="검색" @click="searchBtn" style="width:150px;" class="btn btn-primary btn-block btn-flat">
                                     </div>
                                 </div>
                                 <div class="entity-filters">
@@ -36,35 +41,35 @@ var search = Vue.component("Search", {
                                 <table class="table entity-table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th class="item-cell-id"><span>Id</span>
+                                            <th class="item-cell-id"><span>ISBN</span>
                                             </th>
-                                            <th class="item-cell-created-at"><span>Created At</span>
+                                            <th class="item-cell-created-at"><span>Name</span>
                                             </th>
-                                            <th class="item-cell-slug"><span>Slug</span>
+                                            <th class="item-cell-slug"><span>Author</span>
                                             </th>
-                                            <th class="item-cell-name"><span>Name</span>
+                                            <th class="item-cell-name"><span>Publisher</span>
                                             </th>
                                             <th class="table-item-actions"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr id="albums-item-1" class="">
-                                            <td id="albums-item-1-id" class="item-cell-id">
-                                                <div>1</div>
+                                        <tr v-for="item in searchResult.itemList">
+                                            <td class="item-cell-id">
+                                                <div><a @click="modalOpen(item)" style="cursor: pointer;">{{item.isbn}}</a></div>
                                             </td>
-                                            <td id="albums-item-1-created-at" class="item-cell-created-at">
-                                                <div class="display-datetime">7/21/2019, 3:00 AM</div>
+                                            <td  class="item-cell-created-at">
+                                                <div class="display-datetime" v-html="item.title"></div>
                                             </td>
-                                            <td id="albums-item-1-slug" class="item-cell-slug">
-                                                <div>decentralized-holistic-initiative</div>
+                                            <td  class="item-cell-slug">
+                                                <div>{{item.authors}}</div>
                                             </td>
                                             <td id="albums-item-1-name" class="item-cell-name">
-                                                <div>Decentralized holistic initiative</div>
+                                                <div>{{item.publisher}}</div>
                                             </td>
-                                            <td class="table-item-actions">
-                                                <div class="btn-group btn-group-xs nowrap"><a href="/entity/albums/item/1" class="btn btn-primary"><i class="fas fa-edit"></i></a>
-                                                    <div class="btn btn-danger"><i class="fas fa-trash"></i></div>
-                                                </div>
+                                        </tr>
+                                        <tr v-if="searchResult.itemList.length <= 0">
+                                            <td class="item-cell-slug" colspan="4">
+                                                <div>결과가 없습니다.</div>
                                             </td>
                                         </tr>
                                         
@@ -73,8 +78,28 @@ var search = Vue.component("Search", {
                                 </table>
                             </div>
                             <nav class="pager-wrapper box-footer">
-                                <div class="well well-sm">Elements shown: <span>20</span></div>
+                            <kd-pagination 
+		                           :curr-page-num="extSearchCondition.pageNo"
+		                           :page-limit="extSearchCondition.limit"
+		                           :total-count="searchResult.totalCount"
+		                     ></kd-pagination>    
                             </nav>
+                            <modal v-if="showModal" @close="showModal = false" :modal-data="modalData">
+                                
+                                <div slot="body">
+                                    <ul>
+                                    <li><span>제목</span> : <span v-html="modalData.title"></span></li>
+                                    <li><span>도서 썸네일</span> : <span><img v-bind:src="modalData.thumbnail"></span></li>
+                                    <li><span>소개</span> : {{modalData.contents}}</li>
+                                    <li><span>ISBN</span> : {{modalData.isbn}}</li>
+                                    <li><span>저자</span> : {{modalData.authors}}</li>
+                                    <li><span>출판사</span> : {{modalData.publisher}}</li>
+                                    <li><span>출판일</span> : {{modalData.pub_date}}</li>
+                                    <li><span>정가</span> : {{modalData.price}}</li>
+                                    <li><span>판매가</span> : {{modalData.sale_price}}</li>
+                                    </ul>
+                                </div>
+                              </modal>
                         </div>
                     </div>
                 </div>
@@ -83,11 +108,95 @@ var search = Vue.component("Search", {
     ,
     props: []
     , data: function () {
-        return {id: '', password: ''};
+        return {
+            searchCondition: {
+                keyword: ''
+            }
+            , saveSearchCondition: {}
+            , extSearchCondition: {
+                limit: 10
+                , pageNo: 1
+            }
+            , searchResult: {
+                totalCount: 0
+                , itemList: []
+            }
+            , showModal : false
+            , modalData : null
+        };
     }
     , methods: {
-        submit: function () {
+
+        searchBtn : function(){
+            var vueObj = this;
+            vueObj.extSearchCondition.pageNo = 1;
+            vueObj.saveSearchCondition = Object.assign({}, vueObj.searchCondition);
+            vueObj.search();
+        }
+        , search : function(){
+            var vueObj = this;
+
+            var params = Object.assign(vueObj.saveSearchCondition, vueObj.extSearchCondition);
+
+            axios.get('/api/books'
+                , {params : params})
+                .then(function(res){
+                    var data = res.data;
+                    Vue.set(vueObj.searchResult, 'itemList', data.items)
+                    //vueObj.searchResult.itemList = data.items;
+                    vueObj.searchResult.totalCount = data.total_count;
+                });
 
         }
+        , pageChange : function(pageNo){
+            var vueObj = this;
+            vueObj.extSearchCondition.pageNo = pageNo;
+            vueObj.search();
+
+        }
+        , modalOpen : function(data){
+            var vueObj = this;
+            vueObj.modalData = data;
+            vueObj.showModal = true;
+        }
+
+    }
+    ,created : function(){
+
+        var vueObj = this;
+        //pageChange
+        vueObj.$on('kd-pageChange' , function(n){
+            this.pageChange(n);
+        });
+
     }
 });
+
+
+
+Vue.component('modal', {
+    template: `<transition name="modal">
+    <div class="modal-mask">
+      <div class="modal-wrapper">
+        <div class="modal-container">
+
+
+          <div class="modal-body">
+            <slot name="body">
+              default body
+            </slot>
+          </div>
+
+          <div class="modal-footer">
+            <slot name="footer">
+              <button class="modal-default-button" @click="$emit('close')" style="width:150px;" class="btn btn-primary btn-block btn-flat">
+                OK
+              </button>
+            </slot>
+          </div>
+        </div>
+      </div>
+    </div>
+  </transition>`
+    , props : ['modalData']
+})

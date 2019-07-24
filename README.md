@@ -15,11 +15,11 @@
 #### 추가사항
 
 - SPA(Single Page Application)으로 구현해 주세요.
-    1.spa로 구현하려 시도 하였으나 미완성, 로그인 이후 페이지만 가능
+    * spa로 구현하려 시도 하였으나 미완성, 로그인 이후 페이지만 가능
 
 - 카카오 책 검색 API에 장애가 발생한 경우, 네이버 책 검색 API를 통해 데이터 제공 (Front-end는 이 사실을 몰라야 함)
 　· 네이버 책 검색 API: https://developers.naver.com/docs/search/book/
-    1.Feign Fallback 지정으로 네이버 호출
+    * Feign Fallback 지정으로 네이버 호출
 
 --- 
 #### 라이브러리
